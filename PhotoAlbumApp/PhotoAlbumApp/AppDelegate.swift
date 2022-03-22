@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  PhotoAlbumApp
-//
-//  Created by 김상혁 on 2022/03/21.
-//
-
 import UIKit
 
 @main
@@ -27,7 +20,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         
     }
-
-
 }
 

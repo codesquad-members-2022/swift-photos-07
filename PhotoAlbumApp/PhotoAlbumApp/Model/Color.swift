@@ -1,10 +1,3 @@
-//
-//  Color.swift
-//  PhotoAlbumApp
-//
-//  Created by 김상혁 on 2022/03/22.
-//
-
 import Foundation
 
 enum ColorRange {
