@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0090305E27E9659600BDEB32 /* ColorRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0090305D27E9659600BDEB32 /* ColorRange.swift */; };
 		1E5A15D927E86F5A00FA4C9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A15D827E86F5A00FA4C9B /* AppDelegate.swift */; };
 		1E5A15DB27E86F5A00FA4C9B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A15DA27E86F5A00FA4C9B /* SceneDelegate.swift */; };
 		1E5A15DD27E86F5A00FA4C9B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A15DC27E86F5A00FA4C9B /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0090305D27E9659600BDEB32 /* ColorRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorRange.swift; sourceTree = "<group>"; };
 		1E5A15D527E86F5A00FA4C9B /* PhotoAlbumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoAlbumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E5A15D827E86F5A00FA4C9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E5A15DA27E86F5A00FA4C9B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				1E5A15EC27E95FAB00FA4C9B /* Color.swift */,
+				0090305D27E9659600BDEB32 /* ColorRange.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0090305E27E9659600BDEB32 /* ColorRange.swift in Sources */,
 				1E5A15DD27E86F5A00FA4C9B /* ViewController.swift in Sources */,
 				1E5A15ED27E95FAB00FA4C9B /* Color.swift in Sources */,
 				1E5A15D927E86F5A00FA4C9B /* AppDelegate.swift in Sources */,
