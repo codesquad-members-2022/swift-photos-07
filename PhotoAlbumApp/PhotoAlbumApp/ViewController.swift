@@ -3,68 +3,78 @@ import Photos
 
 class ViewController: UIViewController {
     
+    //MARK: 사용하게 될 변수들
     private let colors = ColorFactory.generateRandom(count: 40)
+    private var fetchResults: PHFetchResult<PHAsset>?    // 앨범 정보
+    private let imageManager = PHCachingImageManager()    // 앨범에서 사진 받아오기 위한 객체
+    private var fetchOptions: PHFetchOptions {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        return fetchOptions
+    }    // 앨범 정보에 대한 옵션
+    @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let requiredAccessLevel: PHAccessLevel = .readWrite
-        PHPhotoLibrary.requestAuthorization(for: requiredAccessLevel) { authorizationStatus in
-            switch authorizationStatus {
-            case .limited:
-                print("limited authorization granted")
-            case .authorized:
-                print("authorization granted")
-            default:
-                //FIXME: Implement handling for all authorizationStatus
-                print("Unimplemented")
-            }
-        }
-        
         configureViewController()
+        checkPermission()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: nil)
     }
     
-    private func setPhotoLibraryImage() {
-        let fetchOption = PHFetchOptions()
-        fetchOption.fetchLimit = 1
-        fetchOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let fetchPhotos = PHAsset.fetchAssets(with: fetchOption)
-        if let photo = fetchPhotos.firstObject {
-            DispatchQueue.main.async {
-                ImageManager.shared.requestImage(from: photo, thumnailSize: CGSize(width: 80.0, height: 80.0)) { image in
-                // 가져온 이미지로 (image 파라미터) 하고싶은 행동
+    //MARK: 접근 권한과 그에 따른 처리
+    func checkPermission() {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .authorized:
+            self.requestImageCollection()
+        case .denied: break
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization({
+                switch $0 {
+                case .authorized:
+                    self.requestImageCollection()
+                case .denied: break
+                default:
+                    break
                 }
-           }
+            })
+        default:
+            break
         }
     }
     
+    func requestImageCollection() {
+        fetchResults = PHAsset.fetchAssets(with: nil)
+        OperationQueue.main.addOperation {
+            self.collectionView.reloadData()
+        }
+    }
+
 }
 
 extension ViewController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return colors.count
+        return fetchResults?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.contentView.backgroundColor = colors[indexPath.item]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CustomCollectionViewCell, let asset = fetchResults?[indexPath.row] else {
+            return UICollectionViewCell()
+        }
+        imageManager.requestImage(for: asset, targetSize: cell.frame.size, contentMode: .default, options: nil) { (image, _) in
+            cell.imageView.image = image
+            cell.imageView.contentMode = .scaleToFill
+        }
         return cell
     }
-    
-}
-
-extension ViewController {
-    
-    @objc func rightBarButtonItemTouched() {
-
-    }
-
 }
 
 extension ViewController {
     private func configureViewController() {
         title = "Photos"
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        collectionView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     }
 }
