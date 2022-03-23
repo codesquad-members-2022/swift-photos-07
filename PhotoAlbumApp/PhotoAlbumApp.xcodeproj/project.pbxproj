@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		008C648727EABC8D00213FCA /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008C648627EABC8D00213FCA /* PhotoViewController.swift */; };
 		0090305E27E9659600BDEB32 /* ColorRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0090305D27E9659600BDEB32 /* ColorRange.swift */; };
 		0090306027E96B6F00BDEB32 /* ColorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0090305F27E96B6F00BDEB32 /* ColorFactory.swift */; };
 		1E5A15D927E86F5A00FA4C9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A15D827E86F5A00FA4C9B /* AppDelegate.swift */; };
@@ -31,7 +30,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		008C648627EABC8D00213FCA /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		0090305D27E9659600BDEB32 /* ColorRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorRange.swift; sourceTree = "<group>"; };
 		0090305F27E96B6F00BDEB32 /* ColorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorFactory.swift; sourceTree = "<group>"; };
 		1E5A15D527E86F5A00FA4C9B /* PhotoAlbumApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoAlbumApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,7 +95,6 @@
 				1E5A15D827E86F5A00FA4C9B /* AppDelegate.swift */,
 				1E5A15DA27E86F5A00FA4C9B /* SceneDelegate.swift */,
 				1E5A15DC27E86F5A00FA4C9B /* ViewController.swift */,
-				008C648627EABC8D00213FCA /* PhotoViewController.swift */,
 				0090306127E96FD200BDEB32 /* Factory */,
 				1E5A15EE27E95FBD00FA4C9B /* Model */,
 				1E5A15DE27E86F5A00FA4C9B /* Main.storyboard */,
@@ -230,7 +227,6 @@
 				0090305E27E9659600BDEB32 /* ColorRange.swift in Sources */,
 				1E5A15DD27E86F5A00FA4C9B /* ViewController.swift in Sources */,
 				1E5A15ED27E95FAB00FA4C9B /* Color.swift in Sources */,
-				008C648727EABC8D00213FCA /* PhotoViewController.swift in Sources */,
 				1E5A15D927E86F5A00FA4C9B /* AppDelegate.swift in Sources */,
 				1E5A15DB27E86F5A00FA4C9B /* SceneDelegate.swift in Sources */,
 			);

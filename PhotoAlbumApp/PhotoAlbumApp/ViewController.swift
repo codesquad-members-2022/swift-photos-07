@@ -6,7 +6,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(rightBarButtonItemTouched))
+        configureViewController()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: nil)
     }
     
 }
@@ -28,9 +29,13 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController {
     
     @objc func rightBarButtonItemTouched() {
-        let vc = PhotoViewController()
-        navigationController?.pushViewController(vc, animated: true)
 
     }
 
+}
+
+extension ViewController {
+    private func configureViewController() {
+        title = "Photos"
+    }
 }
