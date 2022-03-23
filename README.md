@@ -52,7 +52,7 @@ https://user-images.githubusercontent.com/50472122/159459533-12a22d96-ddce-4e7c-
 
 * `color.swift`
 
-```
+```swift
 struct Color {
     let red: Double
     let green: Double
@@ -64,7 +64,7 @@ struct Color {
 
 * `ColorRange.swift`
 
-```
+```swift
 enum ColorRange {
     static let lower = 0.0
     static let upper = 1.0
@@ -78,7 +78,7 @@ enum ColorRange {
 
 ### 팩토리: `ColorFactory` 팩토리를 이용해 UIColor 를 ViewController 에 전달
 
-```
+```swift
 struct ColorFactory {
     private static func generateRandom() -> UIColor {
         let red = Double.random(in: ColorRange.lower...ColorRange.upper)
@@ -108,7 +108,7 @@ struct ColorFactory {
 
 * ViewController.swift
 
-```
+```swift
 ...
     private let colors = ColorFactory.generateRandom(count: 40)
 ...
@@ -135,7 +135,7 @@ extension ViewController: UICollectionViewDataSource {
 
 * [Test] PhotoAlbumAppTests
 
-```
+```swift
 import XCTest
 @testable import PhotoAlbumApp
 
