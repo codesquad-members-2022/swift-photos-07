@@ -3,21 +3,26 @@ import Photos
 
 class ViewController: UIViewController {
     
-    //MARK: 사용하게 될 변수들
     private let colors = ColorFactory.generateRandom(count: 40)
     private var fetchResults: PHFetchResult<PHAsset>?    // 앨범 정보
-    private let imageManager = PHCachingImageManager()    // 앨범에서 사진 받아오기 위한 객체
-    private var fetchOptions: PHFetchOptions {
+    private let imageManager = PHCachingImageManager()   // 앨범에서 사진 받아오기 위한 객체
+    private var fetchOptions: PHFetchOptions {           // 앨범 정보에 대한 옵션
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         return fetchOptions
-    }    // 앨범 정보에 대한 옵션
+    }
+    
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         configureViewController()
         checkPermission()
+        setRequestCollectionOption()
+        
+        PHPhotoLibrary.shared().register(self)
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: nil)
     }
     
@@ -48,7 +53,14 @@ class ViewController: UIViewController {
             self.collectionView.reloadData()
         }
     }
-
+    
+    private func setRequestCollectionOption() {
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let cameraRoll = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
+        guard let cameraRollCollection = cameraRoll.firstObject else { return }
+        
+        self.fetchResults = PHAsset.fetchAssets(in: cameraRollCollection, options: fetchOptions)
+    }
 }
 
 extension ViewController: UICollectionViewDataSource {
@@ -57,9 +69,12 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CustomCollectionViewCell, let asset = fetchResults?[indexPath.row] else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CustomCollectionViewCell,
+                let asset = fetchResults?[indexPath.row] else {
             return UICollectionViewCell()
         }
+        
+        imageManager.startCachingImages(for: [asset], targetSize: cell.frame.size, contentMode: .default, options: nil)
         imageManager.requestImage(for: asset, targetSize: cell.frame.size, contentMode: .default, options: nil) { (image, _) in
             cell.imageView.image = image
             cell.imageView.contentMode = .scaleToFill
@@ -76,5 +91,11 @@ extension ViewController {
         collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
         collectionView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+    }
+}
+
+extension ViewController: PHPhotoLibraryChangeObserver {
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        //TODO: 변화 감지시 실행할 코드 작성
     }
 }
