@@ -96,6 +96,6 @@ extension ViewController {
 
 extension ViewController: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        //TODO: 변화 감지시 실행할 코드 작성
+        self.requestImageCollection()
     }
 }
