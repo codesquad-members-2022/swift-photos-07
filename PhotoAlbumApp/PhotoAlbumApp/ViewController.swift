@@ -3,7 +3,7 @@ import Photos
 
 class ViewController: UIViewController {
     
-    private let colors = ColorFactory.generateRandom(count: 40)
+    private let binaryDataManager = BinaryDataManager()
     private var fetchResults: PHFetchResult<PHAsset>?    // 앨범 정보
     private let imageManager = PHCachingImageManager()   // 앨범에서 사진 받아오기 위한 객체
     private var fetchOptions: PHFetchOptions {           // 앨범 정보에 대한 옵션
@@ -69,15 +69,20 @@ extension ViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CustomCollectionViewCell,
-                let asset = fetchResults?[indexPath.row] else {
-            return UICollectionViewCell()
-        }
+              let asset = fetchResults?[indexPath.row] else {
+                  return UICollectionViewCell()
+              }
         
         imageManager.startCachingImages(for: [asset], targetSize: cell.frame.size, contentMode: .default, options: nil)
-        imageManager.requestImage(for: asset, targetSize: cell.frame.size, contentMode: .default, options: nil) { (image, _) in
-            cell.imageView.image = image
+        imageManager.requestImageDataAndOrientation(for: asset, options: nil) { data, _, _, _ in
+            guard let data = data else { return }
+            self.binaryDataManager.append(datum: data)
+            
+            cell.imageView.image = UIImage(data: data)
             cell.imageView.contentMode = .scaleToFill
+            
         }
         return cell
     }
@@ -99,3 +104,7 @@ extension ViewController: PHPhotoLibraryChangeObserver {
         self.requestImageCollection()
     }
 }
+
+
+
+
