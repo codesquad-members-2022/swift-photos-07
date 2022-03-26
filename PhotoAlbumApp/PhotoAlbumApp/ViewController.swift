@@ -3,89 +3,40 @@ import Photos
 
 class ViewController: UIViewController {
     
-    private let binaryDataManager = BinaryDataManager()
-    private var fetchResults: PHFetchResult<PHAsset>?    // 앨범 정보
-    private let imageManager = PHCachingImageManager()   // 앨범에서 사진 받아오기 위한 객체
-    private var fetchOptions: PHFetchOptions {           // 앨범 정보에 대한 옵션
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        return fetchOptions
-    }
-    
+    private let imageDataManager : ImageDataManager = ImageDataManager()
     @IBOutlet weak var collectionView: UICollectionView!
-    
+    private var thumbnailAssets = [PHAsset]()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        registerPhotoLibrary()
+        imageDataManager.image2DataProcess()
         configureViewController()
-        checkPermission()
-        setRequestCollectionOption()
-        
-        PHPhotoLibrary.shared().register(self)
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: nil)
     }
     
-    //MARK: 접근 권한과 그에 따른 처리
-    func checkPermission() {
-        switch PHPhotoLibrary.authorizationStatus() {
-        case .authorized:
-            self.requestImageCollection()
-        case .denied: break
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({
-                switch $0 {
-                case .authorized:
-                    self.requestImageCollection()
-                case .denied: break
-                default:
-                    break
-                }
-            })
-        default:
-            break
-        }
-    }
+
     
-    func requestImageCollection() {
-        fetchResults = PHAsset.fetchAssets(with: nil)
-        OperationQueue.main.addOperation {
-            self.collectionView.reloadData()
-        }
-    }
-    
-    private func setRequestCollectionOption() {
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let cameraRoll = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
-        guard let cameraRollCollection = cameraRoll.firstObject else { return }
-        
-        self.fetchResults = PHAsset.fetchAssets(in: cameraRollCollection, options: fetchOptions)
-    }
 }
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchResults?.count ?? 0
+        return imageDataManager.binaryData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CustomCollectionViewCell,
-              let asset = fetchResults?[indexPath.row] else {
-                  return UICollectionViewCell()
-              }
-        
-        imageManager.startCachingImages(for: [asset], targetSize: cell.frame.size, contentMode: .default, options: nil)
-        imageManager.requestImageDataAndOrientation(for: asset, options: nil) { data, _, _, _ in
-            guard let data = data else { return }
-            self.binaryDataManager.append(datum: data)
-            
-            cell.imageView.image = UIImage(data: data)
-            cell.imageView.contentMode = .scaleToFill
-            
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? CustomCollectionViewCell  else {
+            return UICollectionViewCell()
         }
+        imageDataManager.imageManager.startCachingImages(for: thumbnailAssets, targetSize: cell.frame.size, contentMode: .default, options: imageDataManager.requestOptions)
+
+        cell.imageView.image = UIImage(data: imageDataManager.binaryData[indexPath.row])
+        cell.imageView.contentMode = .scaleToFill
+
         return cell
     }
+
 }
 
 extension ViewController {
@@ -99,11 +50,24 @@ extension ViewController {
     }
 }
 
-extension ViewController: PHPhotoLibraryChangeObserver {
+extension ViewController : PHPhotoLibraryChangeObserver {
+    
+    func registerPhotoLibrary() {
+        PHPhotoLibrary.shared().register(self)
+    }
+    
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        self.requestImageCollection()
+        guard let asset = imageDataManager.fetchResults, let changes = changeInstance.changeDetails(for: asset) else { return }
+        
+        imageDataManager.fetchResults = changes.fetchResultAfterChanges
+        imageDataManager.fetchImageToData()
+        
+        OperationQueue.main.addOperation {
+            self.collectionView.reloadData()
+        }
     }
 }
+
 
 
 
